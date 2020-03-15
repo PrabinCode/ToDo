@@ -1,0 +1,73 @@
+﻿@model IEnumerable<ToDo.Models.TaskModel>
+
+<div id="ProgressBarToDo">
+
+    <div class="progress" style="background-color: #f51e08;">
+        <div class="progress-bar" role="progressbar" style="width:@(Html.AttributeEncode(ViewBag.CompletedCount))% ; background-color: #197fd6; "></div>
+    </div>
+</div>
+
+<table class="table">
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="width:80%">
+                @if (!item.IsComplete)
+                {
+                    @Html.DisplayFor(modelItem => item.Description)
+                }
+                else
+                {
+                    <div class="CompletedToDo">@Html.DisplayFor(modelItem => item.Description)</div>
+                }
+
+            </td>
+            <td style="width:10%">
+                @Html.CheckBoxFor(modelItem => item.IsComplete, new { id = item.TaskId, @class = "ActiveCheck" })
+            </td>
+            <td style="width:20%">
+                <a href="@Url.Action("Index","ToDoList", new {id = item.TaskId } )"><i id="@item.TaskId" class="glyphicon glyphicon-trash DeleteToDO" title="Delete"></i></a>
+                @*@Html.ActionLink("Delete", "Delete", new { id = item.TaskId, @class="glyphicon glyphicon-trash DeleteToDO" })*@
+            </td>
+        </tr>
+    }
+</table>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.ActiveCheck').change(function () {
+            var self = $(this);
+            var id = self.attr('id');
+            var value = self.prop('checked');
+
+            $.ajax({
+                url: '@Url.Action("AjaxUpdate", "ToDoList")',
+                type: "POST",
+                data: {
+                    id: id,
+                    value: value
+                },
+                success: function (data) {
+                    $('#tableDiv').html(data);
+                }
+            });
+        });
+
+        $('.DeleteToDO').click(function () {
+            debugger;
+            var self = $(this);
+            var id = self.attr('id');
+            $.ajax({
+                url: '@Url.Action("AjaxDelete", "ToDoList")',
+                type: "POST",
+                data: {
+                    id: id,
+                },
+                success: function (data) {
+                    $('#tableDiv').html(data);
+                }
+            });
+        });
+    });
+</script>
