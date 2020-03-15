@@ -1,0 +1,41 @@
+﻿@model ToDo.Models.TaskModel
+
+@{
+    ViewBag.Title = "Index";
+}
+<h3>ToDo List</h3>
+<div id="tableDiv"></div>
+<div id="todoCreateFrom">
+
+    @using (Ajax.BeginForm("AjaxCreate", "ToDoList", new AjaxOptions
+    {
+        InsertionMode = InsertionMode.Replace,
+        HttpMethod = "POST",
+        UpdateTargetId = "tableDiv"
+    }))
+    {
+        <div class="form-group">
+            @Html.AntiForgeryToken()
+            <div>
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+</div>
+
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+            $(document).ready(function () {
+                $.ajax({
+                    url: '@Url.Action("BuildToDoTable", "ToDoList")',
+                    success: function (data) {
+                        $('#tableDiv').html(data);
+                    }
+                });
+            });
+    </script>
+}
