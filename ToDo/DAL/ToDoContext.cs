@@ -6,10 +6,12 @@ namespace ToDo.DAL
 {
     public class ToDoContext : DbContext
     {
-        public ToDoContext() : base("name=ToDoList")
+        public ToDoContext() : base("name=ToDoList") 
         {
             Configuration.LazyLoadingEnabled = true;
         }
+
+
         public DbSet<LoginModel> Login { get; set; }
         public DbSet<TaskModel> Task { get; set; }
         public DbSet<UserModel> User { get; set; }
