@@ -1,7 +1,7 @@
 ﻿################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
-.vs
+**/Web.config
 /.vs/SERVICE HUB/v16
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -361,5 +361,3 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-
-Web.config
