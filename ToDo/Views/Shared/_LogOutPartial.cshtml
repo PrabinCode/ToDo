@@ -1,32 +1,23 @@
-﻿
-@if (Session["LOGGED_USERNAME"] != null && Session["LOGGED_USERID"] != null)
+﻿@if (Session["LOGGED_USERNAME"] != null && Session["LOGGED_USERID"] != null)
 {
-    using (Html.BeginForm("LogOut", "Login", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    using (Html.BeginForm("LogOut", "Login", FormMethod.Post, new {id = "logoutForm", @class = "navbar-right"}))
     {
         @Html.AntiForgeryToken()
 
         <ol class="nav navbar-nav navbar-right">
             <li>
                 <style>
-                    .close {
-                        display: none
-                    }
+                    .close { display: none }
 
-                        .close:hover {
-                            display: none
-                        }
+                    .close:hover { display: none }
                 </style>
-                @Html.ActionLink("Hello " + Session["LOGGED_USERNAME"].ToString() + "!", "Index", "UserInfo", routeValues: null, htmlAttributes: new { title = "Manage" })
+                @Html.ActionLink("Hello " + Session["LOGGED_USERNAME"] + "!", "Index", "UserInfo", null, new {title = "Manage"})
             </li>
             <li>
                 <style>
-                    .close {
-                        display: none
-                    }
+                    .close { display: none }
 
-                        .close:hover {
-                            display: none
-                        }
+                    .close:hover { display: none }
                 </style>
                 <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
             </li>
@@ -35,5 +26,5 @@
 }
 else
 {
-    @Html.ActionLink("Login", "Index", "Login", new { area = "" }, new { @class = "navbar-brand navbar-right" })
+    @Html.ActionLink("Login", "Index", "Login", new {area = ""}, new {@class = "navbar-brand navbar-right"})
 }

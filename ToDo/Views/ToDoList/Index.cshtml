@@ -17,8 +17,8 @@
         <div class="form-group">
             @Html.AntiForgeryToken()
             <div>
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Description, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.Description, "", new {@class = "text-danger"})
             </div>
         </div>
     }
@@ -29,13 +29,13 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
-            $(document).ready(function () {
-                $.ajax({
-                    url: '@Url.Action("BuildToDoTable", "ToDoList")',
-                    success: function (data) {
-                        $('#tableDiv').html(data);
-                    }
-                });
+        $(document).ready(function() {
+            $.ajax({
+                url: '@Url.Action("BuildToDoTable", "ToDoList")',
+                success: function(data) {
+                    $('#tableDiv').html(data);
+                }
             });
+        });
     </script>
 }

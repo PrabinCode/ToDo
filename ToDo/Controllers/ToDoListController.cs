@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Globalization;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using ToDo.DAL;
 using ToDo.Models;
@@ -13,32 +11,27 @@ namespace ToDo.Controllers
 {
     public class ToDoListController : Controller
     {
-        private ToDoContext db = new ToDoContext();
+        private readonly ToDoContext db = new ToDoContext();
+
         public ActionResult Index()
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
 
             return View();
         }
 
         private IEnumerable<TaskModel> GetTaskModels()
         {
-            int UserID = Convert.ToInt32(Session["LOGGED_USERID"].ToString());
-            string UserName = Session["LOGGED_USERNAME"].ToString();
+            var UserID = Convert.ToInt32(Session["LOGGED_USERID"].ToString());
+            var UserName = Session["LOGGED_USERNAME"].ToString();
 
-            IEnumerable<TaskModel> taskModels = db.Task.ToList().Where(x => x.CreatedBy == UserID);
-            int CompletedCount = 0;
-            foreach (TaskModel taskModel in taskModels)
-            {
+            var taskModels = db.Task.ToList().Where(x => x.CreatedBy == UserID);
+            var CompletedCount = 0;
+            foreach (var taskModel in taskModels)
                 if (taskModel.IsComplete)
-                {
                     CompletedCount++;
-                }
-            }
-            ViewBag.CompletedCount = Math.Round(100f * ((float)CompletedCount / (float)taskModels.Count()));
+            ViewBag.CompletedCount = Math.Round(100f * (CompletedCount / (float) taskModels.Count()));
             //UserModel currentUserId = db.User.Where(x => x.UserId.Equals(UserID) && x.Name.Equals(UserName)).FirstOrDefault<UserModel>();
             return taskModels;
         }
@@ -54,10 +47,8 @@ namespace ToDo.Controllers
         public ActionResult AjaxCreate([Bind(Include = "Description")] TaskModel taskModel)
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
-            int UserID = Convert.ToInt32(Session["LOGGED_USERID"].ToString());
+            var UserID = Convert.ToInt32(Session["LOGGED_USERID"].ToString());
             taskModel.IsComplete = false;
             taskModel.CreatedBy = UserID;
             taskModel.CreatedAt = DateTime.Now;
@@ -76,28 +67,19 @@ namespace ToDo.Controllers
         public ActionResult AjaxUpdate(int? id, bool value)
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
+
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var taskModel = db.Task.Find(id);
+            if (taskModel == null) return HttpNotFound();
+
+            taskModel.IsComplete = value;
+            if (ModelState.IsValid)
+            {
+                db.Entry(taskModel).State = EntityState.Modified;
+                db.SaveChanges();
             }
 
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TaskModel taskModel = db.Task.Find(id);
-            if (taskModel == null)
-            {
-                return HttpNotFound();
-            }
-            else
-            {
-                taskModel.IsComplete = value;
-                if (ModelState.IsValid)
-                {
-                    db.Entry(taskModel).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
-            }
             return PartialView("_ToDoTable", GetTaskModels());
         }
 
@@ -106,15 +88,12 @@ namespace ToDo.Controllers
         public ActionResult AjaxDelete(int? id)
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
 
-            TaskModel taskModel = db.Task.Find(id);
+            var taskModel = db.Task.Find(id);
             db.Task.Remove(taskModel);
             db.SaveChanges();
             return PartialView("_ToDoTable", GetTaskModels());
-
         }
     }
 }

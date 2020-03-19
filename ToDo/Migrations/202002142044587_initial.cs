@@ -1,54 +1,52 @@
-﻿namespace ToDo.Migrations
+﻿using System.Data.Entity.Migrations;
+
+namespace ToDo.Migrations
 {
-    using System;
-    using System.Data.Entity.Migrations;
-    
     public partial class initial : DbMigration
     {
         public override void Up()
         {
             CreateTable(
-                "dbo.LoginModel",
-                c => new
+                    "dbo.LoginModel",
+                    c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
-                        Email = c.String(nullable: false),
-                        Password = c.String(nullable: false),
+                        Id = c.Int(false, true),
+                        Email = c.String(false),
+                        Password = c.String(false),
                         ConfirmPassword = c.String(),
-                        LoginTime = c.DateTime(),
+                        LoginTime = c.DateTime()
                     })
                 .PrimaryKey(t => t.Id);
-            
+
             CreateTable(
-                "dbo.TaskModel",
-                c => new
+                    "dbo.TaskModel",
+                    c => new
                     {
-                        TaskId = c.Int(nullable: false, identity: true),
-                        CreatedBy = c.Int(nullable: false),
-                        Description = c.String(nullable: false),
-                        IsComplete = c.Boolean(nullable: false),
+                        TaskId = c.Int(false, true),
+                        CreatedBy = c.Int(false),
+                        Description = c.String(false),
+                        IsComplete = c.Boolean(false),
                         CreatedAt = c.DateTime(),
-                        UpdatedAt = c.DateTime(),
+                        UpdatedAt = c.DateTime()
                     })
                 .PrimaryKey(t => t.TaskId);
-            
+
             CreateTable(
-                "dbo.UserModel",
-                c => new
+                    "dbo.UserModel",
+                    c => new
                     {
-                        UserId = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
-                        Email = c.String(nullable: false),
-                        Password = c.String(nullable: false),
-                        ConfirmPassword = c.String(nullable: false),
-                        SecretWord = c.String(nullable: false),
+                        UserId = c.Int(false, true),
+                        Name = c.String(false),
+                        Email = c.String(false),
+                        Password = c.String(false),
+                        ConfirmPassword = c.String(false),
+                        SecretWord = c.String(false),
                         CreatedDate = c.DateTime(),
-                        ModifiedDate = c.DateTime(),
+                        ModifiedDate = c.DateTime()
                     })
                 .PrimaryKey(t => t.UserId);
-            
         }
-        
+
         public override void Down()
         {
             DropTable("dbo.UserModel");

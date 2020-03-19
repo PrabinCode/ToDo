@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using ToDo.DAL;
 using ToDo.Models;
@@ -12,17 +10,16 @@ namespace ToDo.Controllers
 {
     public class UserInfoController : Controller
     {
-        private ToDoContext db = new ToDoContext();
+        private readonly ToDoContext db = new ToDoContext();
+
         // GET: UserInfo
         public ActionResult Index()
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
-            int UserID = Convert.ToInt32(Session["LOGGED_USERID"].ToString());
-            string UserName = Session["LOGGED_USERNAME"].ToString();
-            UserModel currentUser = db.User.Where(x => x.UserId.Equals(UserID) && x.Name.Equals(UserName)).FirstOrDefault<UserModel>();
+            var UserID = Convert.ToInt32(Session["LOGGED_USERID"].ToString());
+            var UserName = Session["LOGGED_USERNAME"].ToString();
+            var currentUser = db.User.Where(x => x.UserId.Equals(UserID) && x.Name.Equals(UserName)).FirstOrDefault();
             return View(currentUser);
         }
 
@@ -30,28 +27,20 @@ namespace ToDo.Controllers
         public ActionResult UserInfoModify(int? id)
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            UserModel userModel = db.User.Find(id);
-            if (userModel == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var userModel = db.User.Find(id);
+            if (userModel == null) return HttpNotFound();
             return View(userModel);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UserInfoModify([Bind(Include = "UserId,Name,Email,Password,ConfirmPassword,SecretWord")] UserModel userModel)
+        public ActionResult UserInfoModify([Bind(Include = "UserId,Name,Email,Password,ConfirmPassword,SecretWord")]
+            UserModel userModel)
         {
             if (Session["LOGGED_USERID"] == null || Session["LOGGED_USERNAME"] == null)
-            {
                 return RedirectToAction("Index", "Login");
-            }
             userModel.ModifiedDate = DateTime.Now;
             if (ModelState.IsValid)
             {
@@ -59,6 +48,7 @@ namespace ToDo.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index", "ToDoList");
             }
+
             return View(userModel);
         }
     }
